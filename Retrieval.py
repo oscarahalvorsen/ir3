@@ -1,7 +1,7 @@
 import string
 import codecs
 import re
-from gensim import corpora
+from gensim import corpora, models
 from nltk.stem.porter import PorterStemmer
 
 def getText(txtFile):
@@ -26,12 +26,19 @@ def makeBagOfWords(dc):
     dictionary = corpora.Dictionary()
     return [dictionary.doc2bow(d,allow_update=True) for d in dc]
 
+def makeTFIDFCorpus(dc):
+    tfidf_model = models.TfidfModel(dc)
+    return [tfidf_model[d] for d in dc]
+
 txtFile = "pg3300.txt"
 stopWordFile ="stopwords.txt"
 dc = getDocumentCollection(txtFile)
+dc = stemWords(dc)
 dc = filterOutStopwords(dc, stopWordFile)
 print(dc)
-print(len(dc))
 dc = makeBagOfWords(dc)
 print(dc)
 print(len(dc))
+tfidf_corpus = makeTFIDFCorpus(dc)
+print(tfidf_corpus)
+

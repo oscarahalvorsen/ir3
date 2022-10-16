@@ -1,7 +1,7 @@
 import string
 import codecs
 import re
-from nltk.stem.porter import PorterStemmer 
+from nltk.stem.porter import PorterStemmer
 
 def getText(txtFile):
     f = codecs.open(txtFile, "r", "utf-8")
@@ -14,8 +14,14 @@ def getDocumentCollection(txtFile):
 def stemWords(dc):
     stemmer = PorterStemmer()
     return [[stemmer.stem(word.lower()) for word in d] for d in dc]
+
+def filterOutStopwords(dc, stopWordFile):
+    f = codecs.open(stopWordFile, "r", "utf-8")
+    stopWords = re.split(',', f.readline())
+    return [[word for word in d if word not in stopWords] for d in dc]
     
 txtFile = "pg3300.txt"
+stopWordFile ="stopwords.txt"
 dc = getDocumentCollection(txtFile)
+dc = filterOutStopwords(dc, stopWordFile)
 print(stemWords(dc))
-print(len(dc))
